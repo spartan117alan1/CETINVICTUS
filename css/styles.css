@@ -1,0 +1,69 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.hero-section {
+    background: linear-gradient(135deg, #042940, #005C53, #9FC131);
+    color: white;
+    padding: 120px 0;
+}
+.hero-title {
+    font-weight: 800;
+    font-size: 3.5rem;
+    letter-spacing: -1px;
+}
+.feature-box {
+    padding: 30px;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+}
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.icon-water {
+    font-size: 2.5rem;
+    color: #005C53;
+    margin-bottom: 15px;
+}
+
+
+.login-bg {
+    background: linear-gradient(135deg, #042940, #005C53);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-card {
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    background: white;
+}
+.login-header {
+    background-color: #f8f9fa;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+/* --- ESTILOS DASHBOARD (dashboard.html) --- */
+.kpi-card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.bg-optimal {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+.bg-alert {
+    background-color: #f8d7da;
+    color: #842029;
+}
