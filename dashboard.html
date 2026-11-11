@@ -6,8 +6,14 @@
     <title>CETINVICTUS | Dashboard</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
 
+    <!-- 1. AQUÍ AGREGAMOS EL FAVICON PARA LA PESTAÑA -->
+    <link rel="icon" href="img/logo.jpg" type="image/jpeg">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
         .kpi-card { border-radius: 10px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .bg-optimal { background-color: #d1e7dd; color: #0f5132; }
         .bg-alert { background-color: #f8d7da; color: #842029; }
@@ -15,11 +21,15 @@
 </head>
 <body class="bg-light">
 
-
+    <!-- MENÚ SUPERIOR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">💧 CETINVICTUS</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- 2. AQUÍ AGREGAMOS EL LOGO AL NAVBAR -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <!-- La imagen se reduce a 30x30px para que encaje perfectamente -->
+                <img src="img/logo.jpg" alt="Logo CETINVICTUS" width="30" height="30" class="d-inline-block align-text-top rounded me-2">
+                CETINVICTUS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -28,7 +38,6 @@
                     <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Soporte</a></li>
 
-                    
                     <li class="nav-item admin-only"><a class="nav-link text-warning" href="#">Gestión de Usuarios</a></li>
                     <li class="nav-item admin-only"><a class="nav-link text-warning" href="#">Ajuste de Sensores</a></li>
                 </ul>
@@ -40,7 +49,6 @@
         </div>
     </nav>
 
-
     <div class="container mt-4">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -48,56 +56,79 @@
             <span class="badge bg-success fs-6" id="estado-general">Red Estable</span>
         </div>
 
+        <!-- TARJETAS DE SENSORES (KPIs) -->
         <div class="row g-3 mb-4">
-       
             <div class="col-md-3">
                 <div class="card kpi-card bg-optimal text-center p-3">
                     <h6 class="card-title text-uppercase text-muted mb-1">Nivel de pH</h6>
-                    <h2 class="fw-bold mb-0" id="val-ph">7.2</h2>
+                    <h2 class="fw-bold mb-0" id="val-ph">--</h2>
                 </div>
             </div>
-      
             <div class="col-md-3">
                 <div class="card kpi-card bg-optimal text-center p-3">
                     <h6 class="card-title text-uppercase text-muted mb-1">Turbidez (NTU)</h6>
-                    <h2 class="fw-bold mb-0" id="val-turbidez">1.5</h2>
+                    <h2 class="fw-bold mb-0" id="val-turbidez">--</h2>
                 </div>
             </div>
-         
+            <!-- Nueva tarjeta: Cloro -->
             <div class="col-md-3">
-                <div class="card kpi-card bg-alert text-center p-3">
-                    <h6 class="card-title text-uppercase text-muted mb-1">Sólidos (TDS)</h6>
-                    <h2 class="fw-bold mb-0" id="val-tds">450 ppm</h2>
-                    <small class="text-danger">Revisión sugerida</small>
+                <div class="card kpi-card bg-optimal text-center p-3" id="card-cloro">
+                    <h6 class="card-title text-uppercase text-muted mb-1">Cloro Residual</h6>
+                    <h2 class="fw-bold mb-0"><span id="val-cloro">--</span> <small class="fs-6">mg/L</small></h2>
                 </div>
             </div>
-         
+            <!-- Nueva tarjeta: Flujo -->
             <div class="col-md-3">
-                <div class="card kpi-card bg-optimal text-center p-3">
-                    <h6 class="card-title text-uppercase text-muted mb-1">Temperatura</h6>
-                    <h2 class="fw-bold mb-0" id="val-temp">24°C</h2>
+                <div class="card kpi-card text-center p-3" style="background-color: #e2f0fb;">
+                    <h6 class="card-title text-uppercase text-muted mb-1">Flujo de Red</h6>
+                    <h2 class="fw-bold text-primary mb-0"><span id="val-flujo">--</span> <small class="fs-6">L/s</small></h2>
                 </div>
             </div>
         </div>
 
-       
-        <div class="row">
-            <div class="col-12">
-                <div class="card kpi-card p-3">
-                    <h5>Tendencia de Pureza en Tiempo Real</h5>
-                  
-                    <canvas id="graficaSensores" height="80"></canvas>
+        <!-- BOTÓN DE REPORTE -->
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-outline-primary shadow-sm fw-bold" onclick="generarReportePDF()">
+                📄 Descargar Reporte PDF
+            </button>
+        </div>
+
+        <!-- ÁREA PARA GRÁFICAS -->
+        <!-- El id="area-reporte" engloba todo lo que se convertirá en PDF -->
+        <div class="row g-4 mb-5" id="area-reporte">
+            
+            <!-- Gráfica de Línea -->
+            <div class="col-lg-8">
+                <div class="card kpi-card p-3 h-100">
+                    <h5 class="text-secondary mb-3">Tendencia de Pureza en Tiempo Real</h5>
+                    <div style="height: 300px;">
+                        <canvas id="graficaSensores"></canvas>
+                    </div>
                 </div>
             </div>
             
+            <!-- Gráfica de Pastel (Doughnut) -->
+            <div class="col-lg-4">
+                <div class="card kpi-card p-3 h-100 text-center">
+                    <h5 class="text-secondary mb-3">Índice de Calidad</h5>
+                    <div style="height: 250px; display: flex; justify-content: center;">
+                        <canvas id="graficaCalidad"></canvas>
+                    </div>
+                    <p class="mt-3 text-muted small mb-0">Estado actual basado en pH, Turbidez y TDS.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
-
+    <!-- LIBRERÍAS EXTERNAS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Librería para generar el PDF de las gráficas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-
+    <!-- TU SCRIPT DE LÓGICA -->
     <script src="js/app.js"></script>
 </body>
 </html>

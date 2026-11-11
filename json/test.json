@@ -1,0 +1,25 @@
+
+{
+
+  "ts": 1788540800,
+  "metrics": {
+    "ph": 7.21,
+    "turbidity_ntu": 1.45,
+    "chlorine_mg_l": 0.82,
+    "flow_lps": 12.5
+  },
+  "sensors_health": {
+    "ph_electrode_mv": 12.4, 
+    "ph_status": "OK",
+    "turbidity_lens_cleanliness_pct": 88.5,
+    "turbidity_status": "WARNING_DIRTY",
+    "days_since_last_calibration": 45,
+    "internal_temp_c": 26.4
+  },
+  "diagnostics": {
+    "battery_v": 3.85,
+    "rssi_dbm": -72,
+    "free_heap_bytes": 142000
+  }
+
+} 
