@@ -8,10 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<!-- Se agregan las clases de flexbox nativas de Bootstrap para el sticky footer -->
+<body class="bg-light d-flex flex-column min-vh-100">
 
     <!-- MENÚ SUPERIOR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.html">
                 <img src="img/logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top rounded me-2">
@@ -25,15 +26,17 @@
                     <li class="nav-item"><a class="nav-link" href="dashboard.html">Métricas (En vivo)</a></li>
                     <li class="nav-item"><a class="nav-link active text-warning" href="usuarios.html">Gestión de Usuarios</a></li>
                 </ul>
-                <div class="d-flex text-white align-items-center">
-                    <span class="me-3 fw-bold">Rol: Administrador</span>
+                <div class="d-flex text-white align-items-center mt-2 mt-lg-0">
+                    <!-- Contenedor del Badge -->
+                    <span class="me-3 fw-bold small" id="user-info-badge"></span>
                     <button class="btn btn-sm btn-outline-light" onclick="cerrarSesion()">Salir</button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
+    <!-- CONTENIDO PRINCIPAL (flex-grow-1 empuja el footer hacia abajo) -->
+    <div class="container mt-4 mb-5 flex-grow-1">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Gestión de Usuarios y Clientes</h2>
             <button class="btn btn-success fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
@@ -41,14 +44,12 @@
             </button>
         </div>
 
-        <!-- BARRA DE BÚSQUEDA -->
         <div class="row mb-3">
             <div class="col-md-6">
                 <input type="text" class="form-control" id="inputBuscador" placeholder="🔍 Buscar por correo electrónico..." onkeyup="filtrarUsuarios()">
             </div>
         </div>
 
-        <!-- TABLA DE USUARIOS -->
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -64,7 +65,7 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-usuarios">
-                            <!-- Los usuarios se cargarán aquí -->
+                            <!-- Contenido dinámico -->
                         </tbody>
                     </table>
                 </div>
@@ -72,102 +73,37 @@
         </div>
     </div>
 
-    <!-- MODAL PARA NUEVO USUARIO -->
-    <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title fw-bold">Registrar Nuevo Usuario</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="formUsuario">
-                        <div class="row g-3">
-                            <!-- Tipo de Usuario -->
-                            <div class="col-12 mb-3">
-                                <label class="form-label text-muted small fw-bold">Tipo de Cuenta (Rol)</label>
-                                <select class="form-select border-primary" id="rolUsuario" onchange="toggleCamposCliente()" required>
-                                    <option value="cliente" selected>Ciudadano / Cliente</option>
-                                    <option value="admin">Administrador / Soporte Técnico</option>
-                                </select>
-                            </div>
-
-                            <!-- Datos Personales -->
-                            <div class="col-md-6">
-                                <label class="form-label text-muted small fw-bold">Nombre(s)</label>
-                                <!-- pattern evita números -->
-                                <input type="text" class="form-control" id="nombreUsuario" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+" title="Solo se permiten letras" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted small fw-bold">Apellidos</label>
-                                <input type="text" class="form-control" id="apellidoUsuario" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+" title="Solo se permiten letras" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-muted small fw-bold">Edad</label>
-                                <input type="number" class="form-control" id="edadUsuario" min="18" max="99" required>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label text-muted small fw-bold">Teléfono Móvil</label>
-                                <input type="tel" class="form-control" id="telefonoUsuario" pattern="[0-9]{10}" placeholder="10 dígitos" required>
-                            </div>
-
-                            <!-- Campos Específicos para Clientes (Se ocultan si elige Admin) -->
-                            <div class="col-12" id="camposCliente">
-                                <div class="card bg-light border-0 p-3 mt-2">
-                                    <h6 class="text-primary mb-3">Datos de Ubicación (Solo Clientes)</h6>
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <label class="form-label text-muted small fw-bold">Compañía Suministradora</label>
-                                            <select class="form-select" id="companiaUsuario">
-                                                <!-- ¡Unico valor en México para el ejemplo! -->
-                                                <option value="CONAGUA">CONAGUA (Comisión Nacional del Agua)</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label text-muted small fw-bold">Estado</label>
-                                            <select class="form-select" id="estadoUsuario">
-                                                <option value="" disabled selected>Seleccione...</option>
-                                                <option value="Aguascalientes">Aguascalientes</option>
-                                                <option value="Baja California">Baja California</option>
-                                                <option value="Ciudad de México">Ciudad de México</option>
-                                                <option value="Jalisco">Jalisco</option>
-                                                <option value="Nuevo León">Nuevo León</option>
-                                                <!-- ... puedes agregar los demás después ... -->
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label text-muted small fw-bold">Colonia / Sector</label>
-                                            <input type="text" class="form-control" id="coloniaUsuario">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Datos de Acceso -->
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label text-muted small fw-bold">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correoUsuario" required>
-                            </div>
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label text-muted small fw-bold">Contraseña</label>
-                                <input type="password" class="form-control" id="passUsuario" oninput="evaluarPassword()" required>
-                                <!-- Verificador de fortaleza -->
-                                <div class="progress mt-2" style="height: 5px;">
-                                    <div id="passStrengthBar" class="progress-bar bg-danger" role="progressbar" style="width: 0%;"></div>
-                                </div>
-                                <small id="passStrengthText" class="text-danger mt-1 d-block">Demasiado corta</small>
-                            </div>
-                        </div>
-                        <hr class="mt-4">
-                        <button type="submit" class="btn btn-success w-100 fw-bold fs-5">Guardar Usuario en Base de Datos</button>
-                    </form>
-                </div>
-            </div>
+    <!-- FOOTER (mt-auto es la clave de Bootstrap para mandarlo al fondo) -->
+    <footer class="bg-dark text-white text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-0">© 2026 <strong>Proyecto Hackathon 2026</strong> | CETINVICTUS - Clean Water For All</p>
+            <small class="text-muted">Todos los derechos reservados.</small>
         </div>
-    </div>
+    </footer>
 
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/usuarios.js"></script>
-    <script src="js/app.js?v=6"></script>
+    
+    <!-- SCRIPT INFALIBLE PARA RENDERIZAR EL USUARIO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const badge = document.getElementById('user-info-badge');
+            if (badge) {
+                let nombre = sessionStorage.getItem('userName');
+                const correo = sessionStorage.getItem('userEmail');
+                const rol = sessionStorage.getItem('userRole');
+                
+                // Si el nombre no existe, toma el fragmento del correo
+                if (!nombre || nombre === 'null') {
+                    nombre = correo ? correo.split('@')[0] : 'Usuario';
+                }
+                
+                const rolTexto = rol === 'admin' ? 'Administrador' : 'Cliente';
+                badge.innerHTML = `👤 ${nombre} | Rol: <span class="text-warning">${rolTexto}</span>`;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,8 +1,14 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Fuerza al body a ocupar toda la pantalla */
 }
 
-
+/* --- HERO & GENERALES --- */
 .hero-section {
     background: linear-gradient(135deg, #042940, #005C53, #9FC131) !important;
     color: white !important;
@@ -30,13 +36,9 @@ body {
     margin-bottom: 15px;
 }
 
-
+/* --- LOGIN --- */
 .login-bg {
-    background: linear-gradient(135deg, #042940, #005C53);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: linear-gradient(135deg, #042940, #005C53) !important;
 }
 .login-card {
     border-radius: 15px;
@@ -46,14 +48,8 @@ body {
     max-width: 400px;
     background: white;
 }
-.login-header {
-    background-color: #f8f9fa;
-    padding: 30px;
-    text-align: center;
-    border-bottom: 1px solid #eee;
-}
 
-/* --- ESTILOS DASHBOARD (dashboard.html) --- */
+/* --- ESTILOS DASHBOARD --- */
 .kpi-card {
     border-radius: 10px;
     border: none;
@@ -66,4 +62,22 @@ body {
 .bg-alert {
     background-color: #f8d7da;
     color: #842029;
+}
+
+/* --- CONTENEDOR FLEXIBLE --- */
+.content-wrapper {
+    flex: 1 0 auto; /* Ocupa todo el espacio sobrante empujando el footer abajo */
+}
+
+/* --- FOOTER ESTILIZADO CETINVICTUS --- */
+.footer-cetinvictus {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #042940, #005C53) !important;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 1.2rem 1rem;
+    width: 100%;
+    border-top: 3px solid #9FC131;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    font-size: 0.9rem;
 }

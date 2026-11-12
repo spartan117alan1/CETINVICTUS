@@ -282,3 +282,31 @@ if (modalElement) {
         toggleCamposCliente(); // Restaurar campos por defecto
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Obtener datos seguros de la sesión
+    const rol = sessionStorage.getItem('userRole');
+    let nombre = sessionStorage.getItem('userName');
+    const correo = sessionStorage.getItem('userEmail');
+
+    // 2. Seguridad
+    if (!rol) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // 3. Fallback inteligente para el nombre
+    if (!nombre || nombre === 'null') {
+        nombre = correo ? correo.split('@')[0] : 'Usuario';
+    }
+
+    // 4. Inyectar en el menú
+    const badge = document.getElementById('user-info-badge');
+    if (badge) {
+        const rolTexto = rol === 'admin' ? 'Administrador' : 'Cliente';
+        badge.innerHTML = `👤 ${nombre} | Rol: <span class="text-warning">${rolTexto}</span>`;
+    }
+
+    // 5. Cargar datos
+    cargarUsuarios();
+});

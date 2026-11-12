@@ -19,10 +19,12 @@ const db = new sqlite3.Database('./db/cetinvictus.db', (err) => {
 
 // Crear tablas si no existen
 db.serialize(() => {
-    // Tabla para el historial de sensores
+    // Tabla para el historial de sensores (Actualizada para la estructura MQTT real)
     db.run(`CREATE TABLE IF NOT EXISTS lecturas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         device_id TEXT,
+        region TEXT,
+        zona TEXT,
         ts INTEGER,
         ph REAL,
         turbidity_ntu REAL,
@@ -30,6 +32,16 @@ db.serialize(() => {
         flow_lps REAL,
         turbidity_status TEXT,
         battery_v REAL
+    )`);
+
+    // Tabla para los reportes / tickets de servicio
+    db.run(`CREATE TABLE IF NOT EXISTS reportes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fecha TEXT,
+        usuario TEXT,
+        sensor TEXT,
+        descripcion TEXT,
+        estado TEXT
     )`);
 
     // Tabla para los usuarios del dashboard
@@ -72,10 +84,13 @@ function emitirEvento(data) {
 // ==========================================
 // 3. CONEXIÓN MQTT (Hardware -> Backend)
 // ==========================================
-// IMPORTANTE: Al ser local, ocupas instalar un Broker como 'Mosquitto' en tu PC
-// y usar tu IP local o localhost.
+// Conexión al broker local (Mosquitto debe estar corriendo en tu PC)
 const mqttClient = mqtt.connect('mqtt://localhost:1883'); 
-const TEMA_MQTT = 'cetinvictus/nodos/agua';
+
+// Suscripción usando comodines (+). 
+// Captura todo lo que empiece por 'cetinvictus' y termine en 'telemetry'
+// Ejemplo: cetinvictus/gdl/planta_sur/esp32_node_08/telemetry
+const TEMA_MQTT = 'hackathon/+/+/+/telemetry';
 
 mqttClient.on('connect', () => {
     console.log('🔌 Conectado al Broker MQTT Local');
@@ -84,28 +99,80 @@ mqttClient.on('connect', () => {
 
 mqttClient.on('message', (topic, message) => {
     try {
-        const payload = JSON.parse(message.toString());
-        console.log('💧 Nuevo dato recibido de:', payload.device_id);
-
-        // PASO A: Guardar lectura en SQLite
-        const stmt = db.prepare(`INSERT INTO lecturas (device_id, ts, ph, turbidity_ntu, chlorine_mg_l, flow_lps, turbidity_status, battery_v) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
+        console.log("RAW MQTT:", topic, message.toString());
+        const rawData = JSON.parse(message.toString());
         
-        stmt.run(
-            payload.device_id, 
-            payload.ts, 
-            payload.metrics.ph, 
-            payload.metrics.turbidity_ntu, 
-            payload.metrics.chlorine_mg_l, 
-            payload.metrics.flow_lps, 
-            payload.sensors_health.turbidity_status, 
-            payload.diagnostics.battery_v
-        );
-        stmt.finalize();
+        // Si llega un arreglo (como en tu ejemplo), lo procesamos elemento por elemento; si es objeto, lo metemos en un arreglo
+        const listaDispositivos = Array.isArray(rawData) ? rawData : [rawData];
 
-        // PASO B: Retransmitir al Dashboard vía SSE
-        emitirEvento(payload);
+        listaDispositivos.forEach(item => {
+            // Extraer región, zona e ID desde el JSON nuevo o desde el tópico MQTT como respaldo
+            const parts = topic.split('/');
+            const region = item.region || parts[1] || 'gdl';
+            const zona = item.zone || parts[2] || 'planta_general';
+            const device_id = item.id || parts[3] || 'unknown';
+
+            // Detectar si los datos vienen anidados en "telemetry" o en la raíz
+            const telemetria = item.telemetry ? item.telemetry : item;
+            const metrics = telemetria.metrics || {};
+            const diagnostics = telemetria.diagnostics || {};
+            const sensors_health = telemetria.sensors_health || {};
+
+            const ph = metrics.ph !== undefined ? metrics.ph : null;
+            const turbidity_ntu = metrics.turbidity_ntu !== undefined ? metrics.turbidity_ntu : null;
+            const chlorine_mg_l = metrics.chlorine_mg_l !== undefined ? metrics.chlorine_mg_l : null;
+            const flow_lps = metrics.flow_lps !== undefined ? metrics.flow_lps : null;
+            const battery_v = diagnostics.battery_v !== undefined ? diagnostics.battery_v : null;
+            const ts = telemetria.ts || Math.floor(Date.now() / 1000);
+
+            // Solo guardamos en SQLite si es un nodo con sensores de agua (ignora el gateway que solo manda "led")
+            if (ph !== null || turbidity_ntu !== null) {
+                console.log(`💧 Guardando lectura de: ${device_id} (pH: ${ph}, Turbidez: ${turbidity_ntu})`);
+                
+                const stmt = db.prepare(`
+                    INSERT INTO lecturas 
+                    (device_id, region, zona, ts, ph, turbidity_ntu, chlorine_mg_l, flow_lps, turbidity_status, battery_v) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `);
+                
+                stmt.run(
+                    device_id, 
+                    region, 
+                    zona, 
+                    ts, 
+                    ph, 
+                    turbidity_ntu, 
+                    chlorine_mg_l, 
+                    flow_lps, 
+                    sensors_health.turbidity_status || 'Optimal', 
+                    battery_v
+                );
+                stmt.finalize();
+            }
+
+            // Estructurar paquete unificado para el Frontend
+            const dataParaFrontend = {
+                key: item.key || `${region}/${zona}/${device_id}`,
+                region: region,
+                zone: zona,
+                id: device_id,
+                online: item.online !== undefined ? item.online : true,
+                telemetry: {
+                    ts: ts,
+                    via: telemetria.via || device_id,
+                    metrics: metrics,
+                    sensors_health: sensors_health,
+                    diagnostics: diagnostics
+                },
+                receivedAt: item.receivedAt || Date.now()
+            };
+
+            // Retransmitir al Dashboard vía SSE
+            emitirEvento(dataParaFrontend);
+        });
+
     } catch (error) {
-        console.error('Error procesando mensaje:', error);
+        console.error('Error procesando mensaje MQTT o guardando en BD:', error);
     }
 });
 
@@ -215,5 +282,92 @@ app.post('/api/login', (req, res) => {
             rol: row.rol,
             nombre: `${row.nombre} ${row.apellido}`
         });
+    });
+});
+
+// ==========================================
+// ENDPOINTS PARA LECTURAS Y SIMULADOR
+// ==========================================
+
+// Obtener el historial de los últimos 30 registros (aprox. últimos 30 mins si envían cada min)
+/*app.get('/api/lecturas/historial', (req, res) => {
+     Obtenemos los últimos 30, pero los ordenamos de forma ascendente para la gráfica
+    const sql = `SELECT * FROM (SELECT * FROM lecturas ORDER BY id DESC LIMIT 30) ORDER BY id ASC`;
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// Endpoint para simular al ESP32 (El frontend le enviará datos aquí)
+app.post('/api/lecturas/simular', (req, res) => {
+    const payload = req.body;
+    const device_id = 'simulador_nodo_1';
+    const region = 'gdl';
+    const zona = 'planta_prueba';
+
+    const stmt = db.prepare(`
+        INSERT INTO lecturas 
+        (device_id, region, zona, ts, ph, turbidity_ntu, chlorine_mg_l, flow_lps, turbidity_status, battery_v) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    
+    stmt.run(
+        device_id, region, zona, 
+        payload.ts, payload.metrics.ph, payload.metrics.turbidity_ntu, 
+        payload.metrics.chlorine_mg_l, payload.metrics.flow_lps, 
+        payload.sensors_health.turbidity_status, payload.diagnostics.battery_v, 
+        function(err) {
+            if(err) return res.status(500).json({error: err.message});
+            
+            // Retransmitir al Dashboard vía SSE
+            const dataParaFrontend = { ...payload, device_id, region, zona };
+            emitirEvento(dataParaFrontend); 
+            
+            res.json({ success: true, id: this.lastID });
+    });
+}); */
+
+// ==========================================
+// ENDPOINTS PARA REPORTES / TICKETS
+// ==========================================
+
+// Obtener todos los reportes
+app.get('/api/reportes', (req, res) => {
+    db.all("SELECT * FROM reportes ORDER BY id DESC", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// Crear un nuevo reporte
+app.post('/api/reportes', (req, res) => {
+    const { fecha, usuario, sensor, descripcion } = req.body;
+    const estado = 'Pendiente';
+
+    const sql = `INSERT INTO reportes (fecha, usuario, sensor, descripcion, estado) VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [fecha, usuario, sensor, descripcion, estado], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ mensaje: 'Reporte creado exitosamente', id: this.lastID });
+    });
+});
+
+// Cambiar estado a 'Revisado'
+app.put('/api/reportes/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = `UPDATE reportes SET estado = 'Revisado' WHERE id = ?`;
+    db.run(sql, [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ mensaje: 'Reporte atendido con éxito' });
+    });
+});
+
+// Eliminar reporte
+app.delete('/api/reportes/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = `DELETE FROM reportes WHERE id = ?`;
+    db.run(sql, [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ mensaje: 'Reporte eliminado' });
     });
 });

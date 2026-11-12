@@ -48,20 +48,24 @@ window.cerrarSesion = function() {
 if (document.getElementById('estado-general')) {
     
     // Validar Sesión y Aplicar Permisos Visuales
+    const nombreUsuario = sessionStorage.getItem('userName') || 'Usuario';
     const currentUserRole = sessionStorage.getItem('userRole');
     if (!currentUserRole) window.location.href = 'login.html';
 
-    const badge = document.getElementById('user-role-badge');
-    
-    // LÓGICA DE PERMISOS (Muestra u oculta los paneles)
+    // 1. PINTAR NOMBRE Y ROL CORRECTAMENTE EN EL NAV (Usando user-info-badge)
+    const badge = document.getElementById('user-info-badge');
+    if (badge) {
+        const rolTexto = currentUserRole === 'admin' ? 'Administrador' : 'Cliente';
+        badge.innerHTML = `👤 ${nombreUsuario} | Rol: <span class="text-warning">${rolTexto}</span>`;
+    }
+
+    // 2. APLICAR PERMISOS (Sin sobrescribir el badge del nav)
     if (currentUserRole === 'admin') {
-        if(badge) badge.innerText = 'Rol: Administrador';
-        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block'); // Muestra panel diagnóstico
-        document.querySelectorAll('.client-only').forEach(el => el.style.display = 'none'); // Oculta botón levantar reporte
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.client-only').forEach(el => el.style.display = 'none');
     } else {
-        if(badge) badge.innerText = 'Rol: Cliente';
-        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none'); // Oculta panel diagnóstico
-        document.querySelectorAll('.client-only').forEach(el => el.style.display = 'inline-block'); // Muestra botón levantar reporte
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.client-only').forEach(el => el.style.display = 'inline-block');
     }
 
     // Inicializar Gráficas
@@ -70,13 +74,13 @@ if (document.getElementById('estado-general')) {
         type: 'line',
         data: { 
             labels: [], datasets: [
-                { label: 'pH', data: [], borderColor: '#0d6efd', tension: 0.3, yAxisID: 'y' },
+                { label: 'pH', data: [], borderColor: '#0d6efd', backgroundColor: 'rgba(13, 110, 253, 0.1)', fill: true, tension: 0.3, yAxisID: 'y' },
                 { label: 'Turbidez', data: [], borderColor: '#198754', tension: 0.3, yAxisID: 'y1' },
                 { label: 'Cloro', data: [], borderColor: '#ffc107', tension: 0.3, yAxisID: 'y1' }
             ] 
         },
         options: { responsive: true, maintainAspectRatio: false, scales: {
-            y: { position: 'left', min: 0, max: 14 },
+            y: { position: 'left', min: 0, max: 14, title: {display: true, text: 'pH'} },
             y1: { position: 'right', grid: { drawOnChartArea: false } }
         }}
     }) : null;
@@ -88,57 +92,116 @@ if (document.getElementById('estado-general')) {
         options: { responsive: true, maintainAspectRatio: false, cutout: '75%' }
     }) : null;
 
-    // Procesamiento de JSON (Sensor Data)
-    window.procesarDatosIoT = function(payload) {
-        const date = new Date(payload.ts * 1000);
-        const hora = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+    // NUEVA: Gráfica de Barras
+    const ctxBarras = document.getElementById('graficaBarras');
+    let chartBarras = ctxBarras ? new Chart(ctxBarras.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['pH', 'Turbidez', 'Cloro', 'Flujo (L/s)'],
+            datasets: [{
+                label: 'Niveles Actuales',
+                data: [0, 0, 0, 0],
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#0dcaf0'],
+                borderRadius: 4
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: {display: false} } }
+    }) : null;
 
-        // KPIs
-        if(document.getElementById('val-ph')) document.getElementById('val-ph').innerText = payload.metrics.ph;
-        if(document.getElementById('val-turbidez')) document.getElementById('val-turbidez').innerText = payload.metrics.turbidity_ntu;
-        if(document.getElementById('val-cloro')) document.getElementById('val-cloro').innerText = payload.metrics.chlorine_mg_l;
-        if(document.getElementById('val-flujo')) document.getElementById('val-flujo').innerText = payload.metrics.flow_lps;
+    // Procesamiento de JSON (Sensor Data o Historial)
+window.procesarDatosIoT = function(payload) {
+    // 1. Normalizar datos (Soporta tanto filas planas de SQLite como el objeto SSE con .telemetry)
+    const isSSE = payload.telemetry !== undefined;
+    const metrics = isSSE ? (payload.telemetry.metrics || {}) : payload;
+    const diagnostics = isSSE ? (payload.telemetry.diagnostics || {}) : payload;
+    const health = isSSE ? (payload.telemetry.sensors_health || {}) : payload;
+    const ts = isSSE ? payload.telemetry.ts : payload.ts;
 
-        // Gráficas
-        if (chartLinea) {
-            chartLinea.data.labels.push(hora);
-            chartLinea.data.datasets[0].data.push(payload.metrics.ph);           
-            chartLinea.data.datasets[1].data.push(payload.metrics.turbidity_ntu); 
-            chartLinea.data.datasets[2].data.push(payload.metrics.chlorine_mg_l); 
-            if(chartLinea.data.labels.length > 10) {
-                chartLinea.data.labels.shift();
-                chartLinea.data.datasets.forEach(d => d.data.shift());
-            }
-            chartLinea.update();
+    // Ignorar paquetes que no traigan métricas de agua (ej. paquetes de estado del gateway esp32s3_gw_01)
+    if (metrics.ph === undefined && metrics.turbidity_ntu === undefined) return;
+    if (metrics.ph === null && metrics.turbidity_ntu === null) return;
+
+    const ph = Number(metrics.ph ?? 0);
+    const turbidez = Number(metrics.turbidity_ntu ?? 0);
+    const cloro = Number(metrics.chlorine_mg_l ?? 0);
+    const flujo = Number(metrics.flow_lps ?? 0);
+    const hora = ts ? new Date(ts * 1000).toLocaleTimeString() : new Date().toLocaleTimeString();
+
+    // 2. Actualizar Tarjetas KPI
+    if(document.getElementById('val-ph')) document.getElementById('val-ph').innerText = ph.toFixed(2);
+    if(document.getElementById('val-turbidez')) document.getElementById('val-turbidez').innerText = turbidez.toFixed(2);
+    if(document.getElementById('val-cloro')) document.getElementById('val-cloro').innerText = cloro.toFixed(2);
+    if(document.getElementById('val-flujo')) document.getElementById('val-flujo').innerText = flujo.toFixed(2);
+
+    // 3. Actualizar Diagnóstico Técnico (Panel Admin)
+    if(document.getElementById('diag-bateria') && diagnostics.battery_v !== undefined && diagnostics.battery_v !== null) {
+        document.getElementById('diag-bateria').innerText = `${diagnostics.battery_v} V`;
+    }
+    if(document.getElementById('diag-rssi') && diagnostics.rssi_dbm !== undefined) {
+        document.getElementById('diag-rssi').innerText = `${diagnostics.rssi_dbm} dBm`;
+    }
+    if(document.getElementById('diag-temp-int') && health.internal_temp_c !== undefined) {
+        document.getElementById('diag-temp-int').innerText = `${health.internal_temp_c} °C`;
+    }
+    if(document.getElementById('diag-calibracion') && health.days_since_last_calibration !== undefined) {
+        document.getElementById('diag-calibracion').innerText = `${health.days_since_last_calibration} días`;
+    }
+    if(document.getElementById('diag-lente-bar') && health.turbidity_lens_cleanliness_pct !== undefined) {
+        const pct = health.turbidity_lens_cleanliness_pct;
+        document.getElementById('diag-lente-bar').style.width = `${pct}%`;
+        document.getElementById('diag-lente-text').innerText = `Limpieza: ${pct}%`;
+    }
+
+    // 4. Actualizar Gráfica de Líneas
+    if (typeof chartLinea !== 'undefined' && chartLinea) {
+        chartLinea.data.labels.push(hora);
+        chartLinea.data.datasets[0].data.push(ph);           
+        chartLinea.data.datasets[1].data.push(turbidez); 
+        chartLinea.data.datasets[2].data.push(cloro); 
+        
+        if(chartLinea.data.labels.length > 30) {
+            chartLinea.data.labels.shift();
+            chartLinea.data.datasets.forEach(dataset => dataset.data.shift());
         }
+        chartLinea.update();
+    }
 
-        if (chartPastel) {
-            let pureza = 100 - (Math.abs(7.2 - payload.metrics.ph) * 10 + payload.metrics.turbidity_ntu * 5);
-            pureza = Math.max(0, Math.min(100, pureza));
-            chartPastel.data.datasets[0].data = [pureza.toFixed(1), (100 - pureza).toFixed(1)];
-            chartPastel.data.datasets[0].backgroundColor = pureza < 75 ? ['#dc3545', '#f8d7da'] : ['#005C53', '#e9ecef'];
-            chartPastel.update();
+    // 5. Actualizar Gráfica de Barras
+    if (typeof chartBarras !== 'undefined' && chartBarras) {
+        chartBarras.data.datasets[0].data = [ph, turbidez, cloro, flujo];
+        chartBarras.update();
+    }
+
+    // 6. Actualizar Gráfica de Pastel (Índice de calidad simple)
+    if (typeof chartPastel !== 'undefined' && chartPastel) {
+        const impurezas = Math.min(100, Math.round(turbidez * 10));
+        chartPastel.data.datasets[0].data = [100 - impurezas, impurezas];
+        chartPastel.update();
+    }
+
+    // 7. Insertar fila en la Tabla de Historial
+    const tablaLecturas = document.getElementById('tabla-lecturas-sensores');
+    if (tablaLecturas) {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${hora}</td>
+            <td class="fw-bold">${ph.toFixed(2)}</td>
+            <td>${turbidez.toFixed(2)}</td>
+            <td>${cloro.toFixed(2)}</td>
+            <td>${flujo.toFixed(2)}</td>
+        `;
+        tablaLecturas.insertBefore(fila, tablaLecturas.firstChild);
+        if (tablaLecturas.children.length > 30) {
+            tablaLecturas.removeChild(tablaLecturas.lastChild);
         }
+    }
 
-        // Panel de Diagnóstico (Solo Admin)
-        if (currentUserRole === 'admin') {
-            if(document.getElementById('diag-bateria')) {
-                document.getElementById('diag-bateria').innerText = `${payload.diagnostics.battery_v} V`;
-            }
-            if(document.getElementById('diag-rssi')) document.getElementById('diag-rssi').innerText = `${payload.diagnostics.rssi_dbm} dBm`;
-            if(document.getElementById('diag-temp-int')) document.getElementById('diag-temp-int').innerText = `${payload.sensors_health.internal_temp_c} °C`;
-            if(document.getElementById('diag-calibracion')) document.getElementById('diag-calibracion').innerText = payload.sensors_health.days_since_last_calibration;
-            
-            if(document.getElementById('diag-lente-bar')) {
-                const pct = payload.sensors_health.turbidity_lens_cleanliness_pct;
-                document.getElementById('diag-lente-bar').style.width = `${pct}%`;
-                document.getElementById('diag-lente-text').innerText = `Limpieza: ${pct}%`;
-                if (pct < 90) registrarAlerta(hora, 'Mantenimiento', `Lente sucio (${pct}%).`);
-            }
-        }
-    };
+    // 8. Alertas Automáticas si los parámetros salen de rango
+    if (ph < 6.5 || ph > 8.5) window.registrarAlerta(hora, 'pH Fuera de Rango', `Nivel detectado: ${ph}`);
+    if (turbidez > 5.0) window.registrarAlerta(hora, 'Alta Turbidez', `Nivel detectado: ${turbidez} NTU`);
+};
 
-    // Funciones de la Tabla de Alertas Automáticas (Admin)
+    // Funciones de Alertas Automáticas
     window.registrarAlerta = function(hora, tipo, mensaje) {
         const tabla = document.getElementById('tabla-alertas');
         if (!tabla) return;
@@ -148,14 +211,39 @@ if (document.getElementById('estado-general')) {
         fila.innerHTML = `<td><small>${hora}</small></td><td><span class="text-danger fw-bold">${tipo}</span></td><td><small>${mensaje}</small></td>`;
         tabla.insertBefore(fila, tabla.firstChild);
     };
-
     window.limpiarAlertas = function() {
         if(document.getElementById('tabla-alertas')) document.getElementById('tabla-alertas').innerHTML = '';
     };
 
-    /** SIMULADOR: Activo para que pruebes el diseño YA. 
-    // Cuando conectes el backend, borra este setInterval y usa el SSE. */
-    setInterval(() => {
+    // =====================================
+    // 1. CARGAR HISTORIAL AL INICIAR
+    // =====================================
+    fetch('http://localhost:3000/api/lecturas/historial')
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(lectura => window.procesarDatosIoT(lectura));
+        }).catch(err => console.error("No se pudo cargar historial:", err));
+
+    // =====================================
+    // 2. CONEXIÓN REAL AL BACKEND VÍA SSE
+    // =====================================
+    const sseURL = 'http://localhost:3000/api/stream'; 
+    const eventSource = new EventSource(sseURL);
+
+    eventSource.onmessage = function(event) {
+        const payloadReal = JSON.parse(event.data);
+        console.log("📡 Dato real recibido por SSE:", payloadReal);
+        window.procesarDatosIoT(payloadReal);
+    };
+    eventSource.onerror = function(err) {
+        console.error("🔴 Esperando conexión con el servidor Node.js...");
+    };
+
+    // =====================================
+    // 3. SIMULADOR (ENVÍA A NODE EN LUGAR DE PINTAR DIRECTO)
+    // =====================================
+    // Cuando conecten el ESP32 real, simplemente borra o comenta desde setInterval hasta su cierre.
+    setInterval(async () => {
         const payloadPrueba = {
             "ts": Math.floor(Date.now() / 1000),
             "metrics": {
@@ -167,117 +255,177 @@ if (document.getElementById('estado-general')) {
             "sensors_health": {
                 "ph_electrode_mv": 12.4, 
                 "ph_status": "OK",
-                "turbidity_lens_cleanliness_pct": +(89 - Math.random() * 2).toFixed(1), // Baja aleatoriamente para disparar alerta
+                "turbidity_lens_cleanliness_pct": +(89 - Math.random() * 2).toFixed(1), 
                 "turbidity_status": "WARNING_DIRTY",
                 "days_since_last_calibration": 45,
                 "internal_temp_c": 26.4
             },
             "diagnostics": { "battery_v": 3.85, "rssi_dbm": -72, "free_heap_bytes": 142000 }
         };
-        window.procesarDatosIoT(payloadPrueba);
-    }, 3000);
-
-    /* ============Expandir============
-    // CONEXIÓN REAL AL BACKEND VÍA SSE
-    // ==========================================
-    // NOTA: Si pruebas en otra PC o celular, cambia 'localhost' por la IP de tu computadora (ej. 192.168.1.50)
-    const sseURL = 'http://localhost:3000/api/stream'; 
-    const eventSource = new EventSource(sseURL);
-
-    eventSource.onmessage = function(event) {
-        // Cada vez que Node.js envía un evento, lo convertimos de texto a JSON
-        const payloadReal = JSON.parse(event.data);
-        console.log("📡 Dato real recibido por SSE:", payloadReal);
         
-        // Enviamos el dato real a tu función (la cual actualizará las tarjetas, gráficas y diagnósticos)
-        window.procesarDatosIoT(payloadReal);
-    };
-
-    eventSource.onerror = function(err) {
-        console.error("🔴 Esperando conexión con el servidor Node.js...");
-        // No te preocupes por los errores aquí, EventSource es inteligente y se reconectará solo cuando levantes el backend.
-    };
-     */
+        try {
+            await fetch('http://localhost:3000/api/lecturas/simular', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadPrueba)
+            });
+        } catch (e) {
+            console.error("Error enviando datos simulados al backend:", e);
+        }
+    }, 5000);
 }
 
-// 3. GENERADOR DE PDF
+// 3. GENERADOR DE PDF (Salto de página limpio para la tabla)
 window.generarReportePDF = function() {
     const elemento = document.getElementById('area-reporte');
-    const opciones = { margin: 10, filename: 'Reporte_Agua_CETINVICTUS.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
-    html2pdf().set(opciones).from(elemento).save();
+    
+    // Identificar los contenedores
+    const tablaContainer = elemento.querySelector('.table-responsive');
+    const colTabla = tablaContainer.closest('.col-md-7');
+    const colBarras = elemento.querySelector('#graficaBarras').closest('.col-md-5');
+    const rowContenedor = colTabla.parentElement; // El div class="row g-4" que los envuelve
+
+    // 1. Quitar el scroll de la tabla temporalmente
+    if (tablaContainer) {
+        tablaContainer.style.maxHeight = 'none';
+        tablaContainer.style.overflow = 'visible';
+    }
+
+    // 2. Modificar el layout solo para el PDF (Evita el descuadre de Flexbox)
+    rowContenedor.classList.remove('row', 'g-4'); // Rompemos el flexbox
+    colBarras.className = 'w-100 mb-5'; // La gráfica de barras ocupará el ancho completo en la Pag 1
+    colTabla.className = 'w-100 html2pdf__page-break'; // Forzamos a la tabla a saltar a la Pag 2
+
+    const opciones = { 
+        margin: 10, 
+        filename: 'Reporte_Agua_CETINVICTUS.pdf', 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2 }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+        pagebreak: { mode: ['css', 'legacy'] } 
+    };
+
+    html2pdf().set(opciones).from(elemento).save().then(() => {
+        // 3. Restaurar el diseño web original de Bootstrap al terminar
+        if (tablaContainer) {
+            tablaContainer.style.maxHeight = '280px';
+            tablaContainer.style.overflowY = 'auto';
+        }
+        rowContenedor.classList.add('row', 'g-4');
+        colBarras.className = 'col-md-5';
+        colTabla.className = 'col-md-7';
+    });
 };
 
-// 4. SISTEMA DE TICKETS / REPORTES
-if (!localStorage.getItem('db_reportes')) {
-    localStorage.setItem('db_reportes', JSON.stringify([
-        { fecha: '10:00:00', usuario: 'cliente@cetinvictus.com', sensor: 'Sensor de pH', descripcion: 'Marca valores negativos.', estado: 'Pendiente' }
-    ]));
-}
+// ==========================================
+// 4. SISTEMA DE TICKETS / REPORTES (CONECTADO A SQLITE)
+// ==========================================
 
-window.renderizarReportes = function() {
+window.renderizarReportes = async function() {
     const tbody = document.getElementById('tabla-reportes-usuarios');
     if (!tbody) return;
-    tbody.innerHTML = '';
     
-    const reportes = JSON.parse(localStorage.getItem('db_reportes')) || [];
-    const rolActual = sessionStorage.getItem('userRole');
-    
-    reportes.forEach((rep, index) => {
-        if (rolActual !== 'admin' && rep.usuario !== 'cliente@cetinvictus.com') return;
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/reportes');
+        const reportes = await respuesta.json();
+        
+        tbody.innerHTML = '';
+        const rolActual = sessionStorage.getItem('userRole');
+        const correoActual = sessionStorage.getItem('userEmail');
+        
+        reportes.forEach(rep => {
+            // Los clientes solo ven sus propios reportes, el admin ve todos
+            if (rolActual !== 'admin' && rep.usuario !== correoActual) return;
 
-        const tr = document.createElement('tr');
-        let btnAccion = '';
-        if (rolActual === 'admin') {
-            if (rep.estado === 'Pendiente') {
-                btnAccion = `<button class="btn btn-sm btn-success" onclick="marcarReporteRevisado(${index})">✔ Atender</button>`;
-            } else {
-                btnAccion = `<span class="badge bg-light text-success border border-success">Resuelto</span>`;
+            const tr = document.createElement('tr');
+            let btnAccion = '';
+            
+            if (rolActual === 'admin') {
+                if (rep.estado === 'Pendiente') {
+                    btnAccion = `<button class="btn btn-sm btn-success me-1 mb-1" onclick="marcarReporteRevisado(${rep.id})">✔ Atender</button>`;
+                } else {
+                    btnAccion = `<span class="badge bg-light text-success border border-success me-1 mb-1">Resuelto</span>`;
+                }
+                btnAccion += `<button class="btn btn-sm btn-outline-danger mb-1" onclick="eliminarReporte(${rep.id})">🗑️</button>`;
             }
-        }
-        // Usar display table-cell para la columna si es admin
-        const celdaAdmin = rolActual === 'admin' ? `<td class="text-center">${btnAccion}</td>` : '';
+            
+            const celdaAdmin = rolActual === 'admin' ? `<td class="text-center">${btnAccion}</td>` : '';
 
-        tr.innerHTML = `
-            <td><small class="text-muted">${rep.fecha}</small></td>
-            <td><span class="text-primary fw-bold small">${rep.usuario}</span></td>
-            <td><span class="badge bg-secondary">${rep.sensor}</span></td>
-            <td><small>${rep.descripcion}</small></td>
-            <td><span class="badge ${rep.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-success'}">${rep.estado}</span></td>
-            ${celdaAdmin}
-        `;
-        tbody.prepend(tr); 
-    });
+            tr.innerHTML = `
+                <td><small class="text-muted">${rep.fecha}</small></td>
+                <td><span class="text-primary fw-bold small">${rep.usuario}</span></td>
+                <td><span class="badge bg-secondary">${rep.sensor}</span></td>
+                <td><small>${rep.descripcion}</small></td>
+                <td><span class="badge ${rep.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-success'}">${rep.estado}</span></td>
+                ${celdaAdmin}
+            `;
+            tbody.appendChild(tr); 
+        });
+    } catch (error) {
+        console.error("Error al cargar reportes desde el backend:", error);
+    }
 };
 
+// Enviar nuevo reporte a SQLite
 const formReporte = document.getElementById('formNuevoReporte');
 if (formReporte) {
-    formReporte.addEventListener('submit', function(e) {
+    formReporte.addEventListener('submit', async function(e) {
         e.preventDefault(); 
         const date = new Date();
+        const correoLogueado = sessionStorage.getItem('userEmail') || 'cliente@cetinvictus.com';
+        
         const nuevoReporte = {
             fecha: `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`,
-            usuario: 'cliente@cetinvictus.com', 
+            usuario: correoLogueado,
             sensor: document.getElementById('reporteSensor').value,
-            descripcion: document.getElementById('reporteDesc').value,
-            estado: 'Pendiente'
+            descripcion: document.getElementById('reporteDesc').value
         };
-        const reportes = JSON.parse(localStorage.getItem('db_reportes'));
-        reportes.push(nuevoReporte);
-        localStorage.setItem('db_reportes', JSON.stringify(reportes));
+        
+        try {
+            const res = await fetch('http://localhost:3000/api/reportes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoReporte)
+            });
 
-        const modalEl = document.getElementById('modalReporte');
-        const modalObj = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        modalObj.hide();
-        formReporte.reset();
-        window.renderizarReportes();
+            if(res.ok) {
+                const modalEl = document.getElementById('modalReporte');
+                const modalObj = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modalObj.hide();
+                formReporte.reset();
+                window.renderizarReportes();
+            } else {
+                alert("No se pudo guardar el reporte.");
+            }
+        } catch (err) {
+            console.error(err);
+        }
     });
 }
 
-window.marcarReporteRevisado = function(index) {
-    const reportes = JSON.parse(localStorage.getItem('db_reportes'));
-    reportes[index].estado = 'Revisado';
-    localStorage.setItem('db_reportes', JSON.stringify(reportes));
-    window.renderizarReportes();
+// Marcar como Revisado en SQLite
+window.marcarReporteRevisado = async function(id) {
+    try {
+        await fetch(`http://localhost:3000/api/reportes/${id}`, { method: 'PUT' });
+        window.renderizarReportes();
+    } catch (e) {
+        console.error(e);
+    }
 };
 
-if(document.getElementById('tabla-reportes-usuarios')) window.renderizarReportes();
+// Eliminar reporte de SQLite
+window.eliminarReporte = async function(id) {
+    if (!confirm("¿Estás seguro de que deseas borrar este reporte de servicio de la base de datos?")) return;
+    
+    try {
+        await fetch(`http://localhost:3000/api/reportes/${id}`, { method: 'DELETE' });
+        window.renderizarReportes();
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+// Cargar la tabla al iniciar
+if(document.getElementById('tabla-reportes-usuarios')) {
+    window.renderizarReportes();
+}
