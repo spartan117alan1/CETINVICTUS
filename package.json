@@ -1,0 +1,27 @@
+{
+  "name": "cetinvictus",
+  "version": "1.0.0",
+  "description": "Proyecto Hackathon 2026 # Tecnología que protege cada gota Actualmente nuestro estado atraviesa un problema con la pureza del agua potable, nuestro proyecto se centra en poder aplicar la electrónica y programación para desarrollar dispositivos e interfaces que detecten anomalías en el agua que se distribuye en nuestra ciudad y estado, aportando bienestar a las viviendas detectando turbidez, pH, TDS y temperatura del agua potable..",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spartan117alan1/CETINVICTUS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/spartan117alan1/CETINVICTUS/issues"
+  },
+  "homepage": "https://github.com/spartan117alan1/CETINVICTUS#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "mqtt": "^5.16.1",
+    "sqlite3": "^6.0.1"
+  }
+}
