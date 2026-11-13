@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CETINVICTUS | Dashboard</title>
+    
+    <link rel="icon" href="img/logo.jpg" type="image/jpeg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+
+    <style>
+        .kpi-card { border-radius: 10px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .bg-optimal { background-color: #d1e7dd; color: #0f5132; }
+        .bg-alert { background-color: #f8d7da; color: #842029; }
+        /* Clases auxiliares ocultas por defecto para evitar parpadeos */
+        body:not([data-role="admin"]) .admin-only { display: none !important; }
+        body:not([data-role="cliente"]) .client-only { display: none !important; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- MENÚ SUPERIOR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <img src="img/logo.jpg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top rounded me-2">
+                CETINVICTUS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Métricas (En vivo)</a></li>
+                    
+                    <!-- Menú exclusivo de Admin -->
+                    <li class="nav-item admin-only"><a class="nav-link text-warning" href="users.html">Gestión de Usuarios</a></li>
+                    <li class="nav-item admin-only"><a class="nav-link text-warning" href="#panel-ajustes">Ajuste de Sensores</a></li>
+                </ul>
+                <div class="d-flex text-white align-items-center">
+                    <span class="me-3 fw-bold small" id="user-info-badge">Rol: --</span>
+                    <button id="btn-salir" class="btn btn-sm btn-outline-light">Salir</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div>
+                <h2 class="mb-0" id="node-title">Monitoreo de Calidad de Agua</h2>
+                <small class="text-muted" id="node-subtitle"></small>
+                <small class="text-danger d-block" id="conn-status"></small>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <select class="form-select" id="node-select" aria-label="Nodo"></select>
+                <select class="form-select" id="range-select" aria-label="Rango">
+                    <option value="1h" selected>1 hora</option><option value="6h">6 horas</option>
+                    <option value="24h">24 horas</option><option value="7d">7 días</option><option value="30d">30 días</option>
+                </select>
+                <span class="badge bg-secondary fs-6" id="estado-general">—</span>
+            </div>
+        </div>
+
+        <!-- TARJETAS DE SENSORES (KPIs) -->
+        <div class="row g-3 mb-4" id="kpi-row"></div>
+
+        <!-- BOTÓN DE REPORTE A PDF -->
+        <div class="d-flex justify-content-end mb-3">
+            <button id="btn-pdf" class="btn btn-outline-primary shadow-sm fw-bold">
+                📄 Descargar Reporte PDF
+            </button>
+        </div>
+
+        <!-- ÁREA PARA GRÁFICAS Y TABLAS (TODO ESTO SALE EN EL PDF) -->
+        <div id="area-reporte" class="mb-5 p-2 bg-white">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card kpi-card p-3 h-100">
+                        <h5 class="text-secondary mb-3">Nivel de agua</h5>
+                        <div style="height: 220px;"><canvas id="graficaNivel"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card kpi-card p-3 h-100">
+                        <h5 class="text-secondary mb-1">Cumplimiento (% del tiempo en rango)</h5>
+                        <small class="text-muted d-block mb-2" id="resumen-rango"></small>
+                        <div style="height: 220px;"><canvas id="graficaCumplimiento"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="card kpi-card p-3">
+                        <h5 class="text-secondary mb-3">Tendencia de sensores</h5>
+                        <div style="height: 260px;"><canvas id="graficaSensores"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-lg-5">
+                    <div class="card kpi-card p-3 h-100">
+                        <h5 class="text-secondary mb-1">Estado de las métricas</h5>
+                        <small class="text-muted d-block mb-2">Proporción de sensores según su lectura actual</small>
+                        <div style="height: 240px;"><canvas id="graficaCalidad"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="card kpi-card p-3 h-100">
+                        <h5 class="text-secondary mb-3">Lectura actual vs. límite máximo</h5>
+                        <div style="height: 240px;"><canvas id="graficaBarras"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card kpi-card p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-secondary mb-0">Distribución de lecturas</h5>
+                            <select class="form-select form-select-sm w-auto" id="hist-metric" data-html2canvas-ignore="true"></select>
+                        </div>
+                        <div style="height: 220px;"><canvas id="graficaHistograma"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="card kpi-card p-3">
+                        <h5 class="text-secondary mb-3">Últimas lecturas</h5>
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th>Hora</th><th>pH</th><th>Turbidez (NTU)</th>
+                                        <th>TDS (ppm)</th><th>Temp. (°C)</th><th>Caudal (L/min)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-lecturas-sensores"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             SECCIÓN DE REPORTES DE USUARIO
+        =========================================== -->
+        <div class="row mt-5 mb-4" id="panel-reportes">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 text-primary fw-bold">Gestión de Reportes de Servicio</h5>
+                        <!-- Botón visible SOLO para Clientes -->
+                        <button class="btn btn-primary btn-sm client-only shadow-sm" data-bs-toggle="modal" data-bs-target="#modalReporte">
+                            + Levantar Reporte
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Remitente</th>
+                                        <th>Sensor Reportado</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th class="admin-only text-center">Acción (Admin)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-reportes-usuarios">
+                                    <!-- Los reportes se inyectan aquí con JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <!-- ==========================================
+             SECCIÓN EXCLUSIVA PARA ADMINISTRADORES (DIAGNÓSTICO)
+        =========================================== -->
+        <div class="row mt-5 admin-only" id="panel-admin">
+            <div class="col-12">
+                <h4 class="text-secondary border-bottom pb-2 mb-4">Panel de Diagnóstico Técnico (Admin)</h4>
+            </div>
+
+            <!-- Fila contenedora para las dos columnas -->
+            <div class="col-12">
+                <div class="row g-4"> 
+                    
+                    <!-- Columna Izquierda: Estado del Hardware -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-dark text-white fw-bold">Telemetría</div>
+                            <ul class="list-group list-group-flush" id="health-list"></ul>
+                            <ul class="list-group list-group-flush" id="diag-list"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Alertas Automáticas -->
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+                                <span>Registro de Eventos Automáticos</span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                    <table class="table table-hover table-sm mb-0">
+                                        <thead class="table-light sticky-top">
+                                            <th>Hora</th><th>pH</th><th>Turbidez (NTU)</th><th>TDS (mg/L)</th><th>Temp. (°C)</th><th>Caudal (L/min)</th>
+                                        </thead>
+                                        <tbody id="tabla-alertas"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- Fin de la fila contenedora (.row.g-4) -->
+            </div>
+        </div> <!-- ¡AQUÍ CERRAMOS EL PANEL DE ADMIN! -->
+        <div class="row mt-5 admin-only" id="panel-ajustes">
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark text-white fw-bold">Ajuste de Sensores</div>
+                    <div class="card-body">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="led-switch">
+                            <label class="form-check-label" for="led-switch">LED del nodo</label>
+                        </div>
+                        <div class="small text-muted" id="led-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- ¡AQUÍ CERRAMOS EL CONTAINER PRINCIPAL! -->
+
+    <!-- ==========================================
+         MODAL PARA NUEVO REPORTE (Completamente afuera)
+    =========================================== -->
+    <div class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalReporteLabel">Reportar Anomalía</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formNuevoReporte">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Seleccionar Sensor / Área</label>
+                            <select class="form-select" id="reporteSensor" required>
+                                <option value="" disabled selected>Elige un componente...</option>
+                                <option value="Sensor de pH">Sensor de pH</option>
+                                <option value="Sensor de Turbidez">Sensor de Turbidez</option>
+                                <option value="Sensor de Cloro">Sensor de Cloro</option>
+                                <option value="Sensor de Flujo">Sensor de Flujo</option>
+                                <option value="Falla General">Falla General del Módulo</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold">Descripción del Problema</label>
+                            <textarea class="form-control" id="reporteDesc" rows="3" required placeholder="Ej: El valor de turbidez se quedó congelado..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Enviar Reporte a Soporte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  <!-- ==========================================
+       PIE DE PÁGINA
+  =========================================== -->
+  <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+          <p class="mb-0">© 2026 <strong>Proyecto Hackathon 2026</strong> | CETINVICTUS - Clean Water For All</p>
+          <small class="text-muted">Todos los derechos reservados.</small>
+      </div>
+  </footer>
+
+    <!-- LIBRERÍAS EXTERNAS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

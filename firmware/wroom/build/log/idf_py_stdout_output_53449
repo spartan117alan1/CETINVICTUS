@@ -1,0 +1,87 @@
+[1/15] Building C object esp-idf/proto/CMakeFiles/__idf_proto.dir/metrics.c.obj
+[2/15] Building C object esp-idf/proto/CMakeFiles/__idf_proto.dir/proto.c.obj
+[3/15] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+[4/15] Linking C static library esp-idf/proto/libproto.a
+[5/15] Performing build step for 'bootloader'
+[1/1] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/bootloader/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/bootloader/bootloader.bin
+Bootloader binary size 0x6810 bytes. 0x7f0 bytes (7%) free.
+[6/15] No install step for 'bootloader'
+[7/15] Completed 'bootloader'
+[8/15] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/tx.c.obj
+[9/15] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/sensors.c.obj
+[10/15] Linking C static library esp-idf/main/libmain.a
+[11/15] Generating ld/sections.ld
+[12/15] Linking CXX executable wroom_sensor.elf
+[13/15] Generating binary image from built executable
+esptool.py v4.13.0
+Creating esp32 image...
+Merged 27 ELF sections
+Successfully created esp32 image.
+Generated /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/wroom_sensor.bin
+[14/15] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/partition_table/partition-table.bin /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build/wroom_sensor.bin
+wroom_sensor.bin binary size 0xbd170 bytes. Smallest app partition is 0x100000 bytes. 0x42e90 bytes (26%) free.
+[14/15] cd /home/donitacosmica/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/donitacosmica/esp/esp-idf -D "SERIAL_TOOL=/home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python;;/home/donitacosmica/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/wroom/build -P /home/donitacosmica/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x1000 bootloader/bootloader.bin 0x10000 wroom_sensor.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.13.0
+Serial port /dev/ttyUSB0
+Connecting....
+Chip is ESP32-D0WDQ6 (revision v1.0)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 7c:9e:bd:61:77:34
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000cdfff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 26640 bytes to 16685...
+Writing at 0x00001000... (50 %)
+Writing at 0x0000768c... (100 %)
+Wrote 26640 bytes (16685 compressed) at 0x00001000 in 0.6 seconds (effective 347.0 kbit/s)...
+Hash of data verified.
+Compressed 774512 bytes to 497736...
+Writing at 0x00010000... (3 %)
+Writing at 0x0001bae0... (6 %)
+Writing at 0x000248ad... (9 %)
+Writing at 0x000296eb... (12 %)
+Writing at 0x00033e0f... (16 %)
+Writing at 0x00039de7... (19 %)
+Writing at 0x0003f799... (22 %)
+Writing at 0x00045125... (25 %)
+Writing at 0x0004adb2... (29 %)
+Writing at 0x0005083c... (32 %)
+Writing at 0x00056593... (35 %)
+Writing at 0x0005bfcb... (38 %)
+Writing at 0x000611c7... (41 %)
+Writing at 0x00066777... (45 %)
+Writing at 0x0006ba80... (48 %)
+Writing at 0x0007121f... (51 %)
+Writing at 0x00076980... (54 %)
+Writing at 0x0007c3c8... (58 %)
+Writing at 0x00082073... (61 %)
+Writing at 0x0008774e... (64 %)
+Writing at 0x0008ceda... (67 %)
+Writing at 0x00092829... (70 %)
+Writing at 0x0009806a... (74 %)
+Writing at 0x0009db1d... (77 %)
+Writing at 0x000a3e5c... (80 %)
+Writing at 0x000a979c... (83 %)
+Writing at 0x000af001... (87 %)
+Writing at 0x000b84b3... (90 %)
+Writing at 0x000bfbc2... (93 %)
+Writing at 0x000c5b43... (96 %)
+Writing at 0x000cae31... (100 %)
+Wrote 774512 bytes (497736 compressed) at 0x00010000 in 11.2 seconds (effective 554.4 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 501.7 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

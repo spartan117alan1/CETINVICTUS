@@ -1,0 +1,56 @@
+name: cetinvictus
+
+services:
+  mosquitto:
+    image: docker.io/library/eclipse-mosquitto:2
+    ports: ["1883:1883"]
+    volumes:
+      - ./broker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro,Z
+      - mosquitto-data:/mosquitto/data
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 -W 3 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  timescaledb:
+    image: docker.io/timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_USER: ${DB_USER:-cetin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?define DB_PASSWORD en .env}
+      POSTGRES_DB: ${DB_NAME:-cetinvictus}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes:
+      - tsdb-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro,Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      PORT: "3000"
+      DATABASE_URL: postgres://${DB_USER:-cetin}:${DB_PASSWORD}@timescaledb:5432/${DB_NAME:-cetinvictus}
+      MQTT_URL: mqtt://mosquitto:1883
+      MQTT_ORG: ${MQTT_ORG:-hackathon}
+      JWT_SECRET: ${JWT_SECRET:?define JWT_SECRET en .env}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    depends_on:
+      mosquitto: { condition: service_healthy }
+      timescaledb: { condition: service_healthy }
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports: ["8080:80"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+volumes:
+  mosquitto-data:
+  tsdb-data:

@@ -1,0 +1,185 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3818,len:0x1750
+load:0x403c9700,len:0x4
+load:0x403c9704,len:0xc00
+load:0x403cc700,len:0x2e04
+entry 0x403c9908
+[0;32mI (27) boot: ESP-IDF v5.1.2 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Nov 13 2026 07:23:54[0m
+[0;32mI (27) boot: Multicore bootloader[0m
+[0;32mI (30) boot: chip revision: v0.2[0m
+[0;32mI (34) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (38) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (43) boot.esp32s3: SPI Flash Size : 8MB[0m
+[0;32mI (48) boot: Enabling RNG early entropy source...[0m
+[0;32mI (53) boot: Partition Table:[0m
+[0;32mI (57) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (64) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (72) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (79) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (87) boot: End of partition table[0m
+[0;32mI (91) esp_image: segment 0: paddr=00010020 vaddr=3c0b0020 size=277ech (161772) map[0m
+[0;32mI (128) esp_image: segment 1: paddr=00037814 vaddr=3fc98000 size=045ach ( 17836) load[0m
+[0;32mI (132) esp_image: segment 2: paddr=0003bdc8 vaddr=40374000 size=04250h ( 16976) load[0m
+[0;32mI (138) esp_image: segment 3: paddr=00040020 vaddr=42000020 size=a4920h (674080) map[0m
+[0;32mI (263) esp_image: segment 4: paddr=000e4948 vaddr=40378250 size=0fd8ch ( 64908) load[0m
+[0;32mI (286) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (287) boot: Disabling RNG early entropy source...[0m
+[0;32mI (298) cpu_start: Multicore app[0m
+[0;32mI (298) cpu_start: Pro cpu up.[0m
+[0;32mI (298) cpu_start: Starting app cpu, entry point is 0x40375580[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (316) cpu_start: Pro cpu start user code[0m
+[0;32mI (317) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (317) cpu_start: Application information:[0m
+[0;32mI (320) cpu_start: Project name:     led_mqtt[0m
+[0;32mI (325) cpu_start: App version:      cd36145-dirty[0m
+[0;32mI (330) cpu_start: Compile time:     Nov 13 2026 07:23:47[0m
+[0;32mI (336) cpu_start: ELF file SHA256:  7b8066e9fd2d51b8...[0m
+[0;32mI (342) cpu_start: ESP-IDF:          v5.1.2[0m
+[0;32mI (347) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (352) cpu_start: Max chip rev:     v0.99 [0m
+[0;32mI (357) cpu_start: Chip rev:         v0.2[0m
+[0;32mI (361) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (369) heap_init: At 3FCA0B28 len 00048BE8 (290 KiB): DRAM[0m
+[0;32mI (375) heap_init: At 3FCE9710 len 00005724 (21 KiB): STACK/DRAM[0m
+[0;32mI (381) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (388) heap_init: At 600FE010 len 00001FD8 (7 KiB): RTCRAM[0m
+[0;32mI (395) spi_flash: detected chip: gd[0m
+[0;32mI (398) spi_flash: flash io: dio[0m
+[0;32mI (402) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (409) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (416) app_start: Starting scheduler on CPU0[0m
+[0;32mI (421) app_start: Starting scheduler on CPU1[0m
+[0;32mI (421) main_task: Started on CPU0[0m
+[0;32mI (431) main_task: Calling app_main()[0m
+[0;32mI (435) gpio: GPIO[36]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (494) gpio: GPIO[21]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (546) pp: pp rom version: e7ae62f[0m
+[0;32mI (546) net80211: net80211 rom version: e7ae62f[0m
+[0;32mI (549) wifi:wifi driver task: 3fcaacfc, prio:23, stack:6656, core=0[0m
+[0;32mI (553) wifi:wifi firmware version: 91b9630[0m
+[0;32mI (554) wifi:wifi certification version: v7.0[0m
+[0;32mI (558) wifi:config NVS flash: enabled[0m
+[0;32mI (562) wifi:config nano formating: disabled[0m
+[0;32mI (566) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (571) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (575) wifi:Init management short buffer num: 32[0m
+[0;32mI (579) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (583) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (587) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (591) wifi:Init static rx buffer num: 10[0m
+[0;32mI (595) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (600) wifi_init: rx ba win: 6[0m
+[0;32mI (603) wifi_init: tcpip mbox: 32[0m
+[0;32mI (607) wifi_init: udp mbox: 6[0m
+[0;32mI (610) wifi_init: tcp mbox: 6[0m
+[0;32mI (614) wifi_init: tcp tx win: 5744[0m
+[0;32mI (618) wifi_init: tcp rx win: 5744[0m
+[0;32mI (622) wifi_init: tcp mss: 1440[0m
+[0;32mI (626) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (631) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (653) phy_init: phy_version 620,ec7ec30,Sep  5 2023,13:49:13[0m
+[0;33mW (654) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration[0m
+[0;32mI (701) wifi:mode : sta (48:ca:43:59:a1:44)[0m
+[0;32mI (702) wifi:enable tsf[0m
+[0;32mI (703) wifi:Set ps type: 0, coexist: 0[0m
+
+[0;32mI (706) ESPNOW: espnow [version: 1.0] init[0m
+[0;33mW (707) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (709) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (1195) wifi:new:<5,0>, old:<1,0>, ap:<255,255>, sta:<5,0>, prof:1[0m
+[0;32mI (1196) wifi:state: init -> auth (b0)[0m
+[0;32mI (1969) wifi:state: auth -> assoc (0)[0m
+[0;32mI (1976) wifi:Association refused temporarily, comeback time 1000 (TUs)[0m
+[0;32mI (3001) wifi:state: assoc -> assoc (0)[0m
+[1;31mE (3006) wifi:Association refused temporarily, comeback time 4294967256 (TUs) too long, max allowed 5000 (TUs)[0m
+[0;32mI (3007) wifi:state: assoc -> init (d010)[0m
+[0;32mI (3009) wifi:new:<5,0>, old:<5,0>, ap:<255,255>, sta:<5,0>, prof:1[0m
+[0;33mW (3015) net: Wi-Fi desconectado, motivo=208[0m
+[0;32mI (3269) link: esp32_node_08 en línea[0m
+[0;33mW (4017) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (5001) telemetry: heap libre=271672 min=265836 interna=271672 bloque_max=204800[0m
+[0;33mW (5001) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (5043) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (5430) net: Wi-Fi desconectado, motivo=205[0m
+[0;32mI (5438) wifi:new:<5,0>, old:<5,0>, ap:<255,255>, sta:<5,0>, prof:1[0m
+[0;32mI (5439) wifi:state: init -> auth (b0)[0m
+[0;32mI (6231) wifi:state: auth -> assoc (0)[0m
+[0;32mI (6237) wifi:state: assoc -> run (10)[0m
+[0;32mI (6254) wifi:connected with Mega-2.4G-C1AF, aid = 3, channel 5, BW20, bssid = aa:50:81:34:67:f8[0m
+[0;32mI (6254) wifi:security: WPA3-SAE, phy: bgn, rssi: -27[0m
+[0;32mI (6263) wifi:pm start, type: 0[0m
+
+[0;32mI (6264) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000[0m
+[0;32mI (6268) wifi:AP's beacon interval = 102400 us, DTIM period = 1[0m
+[0;32mI (9275) esp_netif_handlers: sta ip: 192.168.100.80, mask: 255.255.255.0, gw: 192.168.100.1[0m
+[0;32mI (9276) net: IP asignada: 192.168.100.80[0m
+[0;32mI (9324) net: MQTT conectado[0m
+[0;32mI (9337) wifi:<ba-add>idx:0 (ifx:0, aa:50:81:34:67:f8), tid:0, ssn:5, winSize:64[0m
+[0;32mI (10007) telemetry: heap libre=263164 min=257972 interna=263164 bloque_max=196608[0m
+[0;32mI (15011) telemetry: heap libre=262872 min=257972 interna=262872 bloque_max=196608[0m
+[0;32mI (20015) telemetry: heap libre=262900 min=257972 interna=262900 bloque_max=196608[0m
+[0;32mI (25019) telemetry: heap libre=262900 min=257972 interna=262900 bloque_max=196608[0m
+[0;32mI (30023) telemetry: heap libre=262900 min=257972 interna=262900 bloque_max=196608[0m
+[0;32mI (35027) telemetry: heap libre=262876 min=257972 interna=262876 bloque_max=196608[0m
+[0;32mI (40031) telemetry: heap libre=262876 min=257972 interna=262876 bloque_max=196608[0m
+[0;32mI (45035) telemetry: heap libre=262876 min=257792 interna=262876 bloque_max=196608[0m
+[0;32mI (50039) telemetry: heap libre=262876 min=257792 interna=262876 bloque_max=196608[0m
+[0;32mI (55043) telemetry: heap libre=262876 min=257792 interna=262876 bloque_max=196608[0m
+[0;32mI (60047) telemetry: heap libre=262860 min=257792 interna=262860 bloque_max=196608[0m
+[0;32mI (65051) telemetry: heap libre=262860 min=257792 interna=262860 bloque_max=196608[0m
+[0;32mI (70057) telemetry: heap libre=262860 min=257792 interna=262860 bloque_max=196608[0m
+[0;32mI (75065) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (80069) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (85075) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (90079) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (95083) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (100087) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (105095) telemetry: heap libre=262860 min=256236 interna=262860 bloque_max=196608[0m
+[0;32mI (110101) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (115105) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (120111) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (125116) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (130121) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (135125) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (140129) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (145133) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (150139) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (155144) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (160149) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (165156) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (170160) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (175166) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (180175) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (185179) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (190185) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (195189) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (200193) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (205198) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (210203) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (215207) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (220213) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (225217) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (230221) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (235227) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (240231) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (245235) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (250239) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (255244) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (260247) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (265251) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (270257) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (275261) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (280265) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (285269) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (290275) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (295279) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (300283) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (305287) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (310291) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m
+[0;32mI (315295) telemetry: heap libre=262876 min=256236 interna=262876 bloque_max=196608[0m

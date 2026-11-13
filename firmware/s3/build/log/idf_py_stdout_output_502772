@@ -1,0 +1,7 @@
+[1/4] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/partition_table/partition-table.bin /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/led_mqtt.bin
+led_mqtt.bin binary size 0xe4700 bytes. Smallest app partition is 0x100000 bytes. 0x1b900 bytes (11%) free.
+[2/4] Performing build step for 'bootloader'
+[1/1] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/bootloader/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/bootloader/bootloader.bin
+Bootloader binary size 0x51c0 bytes. 0x2e40 bytes (36%) free.
+[3/4] No install step for 'bootloader'
+[4/4] Completed 'bootloader'

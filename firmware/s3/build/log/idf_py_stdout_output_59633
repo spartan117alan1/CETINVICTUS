@@ -1,0 +1,87 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/bootloader/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/bootloader/bootloader.bin
+Bootloader binary size 0x51c0 bytes. 0x2e40 bytes (36%) free.
+[2/10] No install step for 'bootloader'
+[3/10] Completed 'bootloader'
+[4/10] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/net.c.obj
+[5/10] Linking C static library esp-idf/main/libmain.a
+[6/10] Generating ld/sections.ld
+[7/10] Linking CXX executable led_mqtt.elf
+[8/10] Generating binary image from built executable
+esptool.py v4.13.0
+Creating esp32s3 image...
+Merged 2 ELF sections
+Successfully created esp32s3 image.
+Generated /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/led_mqtt.bin
+[9/10] cd /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/esp-idf/esptool_py && /home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python /home/donitacosmica/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/partition_table/partition-table.bin /home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build/led_mqtt.bin
+led_mqtt.bin binary size 0xe4700 bytes. Smallest app partition is 0x100000 bytes. 0x1b900 bytes (11%) free.
+[9/10] cd /home/donitacosmica/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/donitacosmica/esp/esp-idf -D "SERIAL_TOOL=/home/donitacosmica/.espressif/python_env/idf5.1_py3.14_env/bin/python;;/home/donitacosmica/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32s3" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/donitacosmica/Documents/School/Hackathon/Phase_1/firmware/s3/build -P /home/donitacosmica/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32s3 -p /dev/ttyUSB1 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 8MB 0x0 bootloader/bootloader.bin 0x10000 led_mqtt.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.13.0
+Serial port /dev/ttyUSB1
+Connecting....
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded Flash 8MB (GD)
+Crystal is 40MHz
+MAC: 48:ca:43:59:a1:44
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00010000 to 0x000f4fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 20928 bytes to 13295...
+Writing at 0x00000000... (100 %)
+Wrote 20928 bytes (13295 compressed) at 0x00000000 in 0.5 seconds (effective 361.5 kbit/s)...
+Hash of data verified.
+Compressed 935680 bytes to 592638...
+Writing at 0x00010000... (2 %)
+Writing at 0x0001bfa2... (5 %)
+Writing at 0x00026466... (8 %)
+Writing at 0x0002b329... (10 %)
+Writing at 0x00034dd8... (13 %)
+Writing at 0x0003eb10... (16 %)
+Writing at 0x00044a78... (18 %)
+Writing at 0x0004adf2... (21 %)
+Writing at 0x0005099c... (24 %)
+Writing at 0x0005709d... (27 %)
+Writing at 0x0005c856... (29 %)
+Writing at 0x00061fbe... (32 %)
+Writing at 0x000678e2... (35 %)
+Writing at 0x0006d40b... (37 %)
+Writing at 0x00072f38... (40 %)
+Writing at 0x000789e6... (43 %)
+Writing at 0x0007e458... (45 %)
+Writing at 0x00084a81... (48 %)
+Writing at 0x0008a586... (51 %)
+Writing at 0x0008feee... (54 %)
+Writing at 0x00094fbf... (56 %)
+Writing at 0x0009a015... (59 %)
+Writing at 0x0009f1d4... (62 %)
+Writing at 0x000a4411... (64 %)
+Writing at 0x000a9821... (67 %)
+Writing at 0x000aecf2... (70 %)
+Writing at 0x000b48fd... (72 %)
+Writing at 0x000ba112... (75 %)
+Writing at 0x000bfc32... (78 %)
+Writing at 0x000c55b5... (81 %)
+Writing at 0x000cab5f... (83 %)
+Writing at 0x000d3cc3... (86 %)
+Writing at 0x000da369... (89 %)
+Writing at 0x000e1fb5... (91 %)
+Writing at 0x000e7f7e... (94 %)
+Writing at 0x000edbfb... (97 %)
+Writing at 0x000f31f6... (100 %)
+Wrote 935680 bytes (592638 compressed) at 0x00010000 in 13.4 seconds (effective 560.5 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 646.2 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

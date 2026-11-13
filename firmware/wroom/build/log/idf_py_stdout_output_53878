@@ -1,0 +1,186 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7080
+load:0x40078000,len:15584
+load:0x40080400,len:4
+ho 8 tail 4 room 4
+load:0x40080404,len:3876
+entry 0x4008064c
+[0;32mI (31) boot: ESP-IDF v5.1.2 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Nov 13 2026 07:26:03[0m
+[0;32mI (31) boot: Multicore bootloader[0m
+[0;32mI (35) boot: chip revision: v1.0[0m
+[0;32mI (39) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (43) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (48) boot.esp32: SPI Flash Size : 4MB[0m
+[0;32mI (52) boot: Enabling RNG early entropy source...[0m
+[0;32mI (58) boot: Partition Table:[0m
+[0;32mI (61) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (69) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (76) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (83) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (91) boot: End of partition table[0m
+[0;32mI (95) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=20468h (132200) map[0m
+[0;32mI (151) esp_image: segment 1: paddr=00030490 vaddr=3ff80000 size=00004h (     4) load[0m
+[0;32mI (152) esp_image: segment 2: paddr=0003049c vaddr=3ffb0000 size=03e74h ( 15988) load[0m
+[0;32mI (164) esp_image: segment 3: paddr=00034318 vaddr=40080000 size=0bd00h ( 48384) load[0m
+[0;32mI (186) esp_image: segment 4: paddr=00040020 vaddr=400d0020 size=83180h (536960) map[0m
+[0;32mI (380) esp_image: segment 5: paddr=000c31a8 vaddr=4008bd00 size=09fa0h ( 40864) load[0m
+[0;32mI (408) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (408) boot: Disabling RNG early entropy source...[0m
+[0;32mI (420) cpu_start: Multicore app[0m
+[0;32mI (420) cpu_start: Pro cpu up.[0m
+[0;32mI (420) cpu_start: Starting app cpu, entry point is 0x4008137c[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (438) cpu_start: Pro cpu start user code[0m
+[0;32mI (438) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (438) cpu_start: Application information:[0m
+[0;32mI (443) cpu_start: Project name:     wroom_sensor[0m
+[0;32mI (448) cpu_start: App version:      cd36145-dirty[0m
+[0;32mI (454) cpu_start: Compile time:     Nov 13 2026 07:25:56[0m
+[0;32mI (460) cpu_start: ELF file SHA256:  9c426f57151da7bd...[0m
+[0;32mI (466) cpu_start: ESP-IDF:          v5.1.2[0m
+[0;32mI (471) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (475) cpu_start: Max chip rev:     v3.99 [0m
+[0;32mI (480) cpu_start: Chip rev:         v1.0[0m
+[0;32mI (485) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (492) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (498) heap_init: At 3FFB8098 len 00027F68 (159 KiB): DRAM[0m
+[0;32mI (504) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (511) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (517) heap_init: At 40095CA0 len 0000A360 (40 KiB): IRAM[0m
+[0;32mI (525) spi_flash: detected chip: generic[0m
+[0;32mI (528) spi_flash: flash io: dio[0m
+[0;32mI (533) app_start: Starting scheduler on CPU0[0m
+[0;32mI (537) app_start: Starting scheduler on CPU1[0m
+[0;32mI (537) main_task: Started on CPU0[0m
+[0;32mI (547) main_task: Calling app_main()[0m
+[0;32mI (567) wifi:wifi driver task: 3ffbfb78, prio:23, stack:6656, core=0[0m
+[0;32mI (572) wifi:wifi firmware version: 91b9630[0m
+[0;32mI (572) wifi:wifi certification version: v7.0[0m
+[0;32mI (573) wifi:config NVS flash: enabled[0m
+[0;32mI (574) wifi:config nano formating: disabled[0m
+[0;32mI (578) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (583) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (587) wifi:Init management short buffer num: 32[0m
+[0;32mI (591) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (595) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (599) wifi:Init static rx buffer num: 10[0m
+[0;32mI (603) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (608) wifi_init: rx ba win: 6[0m
+[0;32mI (611) wifi_init: tcpip mbox: 32[0m
+[0;32mI (615) wifi_init: udp mbox: 6[0m
+[0;32mI (619) wifi_init: tcp mbox: 6[0m
+[0;32mI (622) wifi_init: tcp tx win: 5744[0m
+[0;32mI (626) wifi_init: tcp rx win: 5744[0m
+[0;32mI (631) wifi_init: tcp mss: 1440[0m
+[0;32mI (635) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (639) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (645) phy_init: phy_version 4780,16b31a7,Sep 22 2023,20:42:16[0m
+[0;33mW (651) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration[0m
+[0;32mI (737) wifi:mode : sta (7c:9e:bd:61:77:34)[0m
+[0;32mI (738) wifi:enable tsf[0m
+[0;32mI (742) ESPNOW: espnow [version: 1.0] init[0m
+[0;32mI (743) gpio: GPIO[4]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (746) gpio: GPIO[17]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (757) gpio: GPIO[27]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (765) gpio: GPIO[25]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (774) gpio: GPIO[2]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0 [0m
+[0;33mW (4838) tx: probando canal 6[0m
+[0;33mW (6847) tx: probando canal 7[0m
+[0;33mW (8856) tx: probando canal 8[0m
+[0;33mW (10864) tx: probando canal 9[0m
+[0;33mW (12873) tx: probando canal 10[0m
+[0;33mW (14881) tx: probando canal 11[0m
+[0;33mW (16889) tx: probando canal 12[0m
+[0;33mW (18897) tx: probando canal 13[0m
+[0;33mW (20905) tx: probando canal 1[0m
+[0;33mW (22913) tx: probando canal 2[0m
+[0;33mW (24921) tx: probando canal 3[0m
+[0;33mW (26929) tx: probando canal 4[0m
+[0;33mW (28937) tx: probando canal 5[0m
+[0;32mI (28959) tx: enlazado en canal 5[0m
+[0;32mI (32961) tx: enlazado en canal 5[0m
+[0;33mW (38972) tx: probando canal 6[0m
+[0;33mW (40980) tx: probando canal 7[0m
+[0;33mW (42988) tx: probando canal 8[0m
+[0;33mW (44996) tx: probando canal 9[0m
+[0;33mW (47004) tx: probando canal 10[0m
+[0;33mW (49012) tx: probando canal 11[0m
+[0;32mI (49015) tx: enlazado en canal 11[0m
+[0;33mW (55033) tx: probando canal 12[0m
+[0;33mW (57041) tx: probando canal 13[0m
+[0;32mI (57044) tx: enlazado en canal 13[0m
+[0;33mW (65070) tx: probando canal 1[0m
+[0;33mW (67078) tx: probando canal 2[0m
+[0;33mW (69086) tx: probando canal 3[0m
+[0;33mW (71094) tx: probando canal 4[0m
+[0;33mW (73102) tx: probando canal 5[0m
+[0;33mW (74989) tx: probando canal 6[0m
+[0;32mI (74994) tx: enlazado en canal 6[0m
+[0;33mW (79109) tx: probando canal 7[0m
+[0;33mW (81117) tx: probando canal 8[0m
+[0;33mW (83127) tx: probando canal 9[0m
+[0;33mW (85135) tx: probando canal 10[0m
+[0;32mI (85139) tx: enlazado en canal 10[0m
+[0;33mW (91155) tx: probando canal 11[0m
+[0;33mW (91262) tx: probando canal 12[0m
+[0;33mW (93271) tx: probando canal 13[0m
+[0;32mI (93274) tx: enlazado en canal 13[0m
+[0;33mW (101297) tx: probando canal 1[0m
+[0;33mW (103304) tx: probando canal 2[0m
+[0;33mW (105313) tx: probando canal 3[0m
+[0;33mW (107320) tx: probando canal 4[0m
+[0;33mW (109329) tx: probando canal 5[0m
+[0;33mW (111336) tx: probando canal 6[0m
+[0;33mW (112285) tx: probando canal 7[0m
+[0;33mW (112707) tx: probando canal 8[0m
+[0;33mW (114080) tx: probando canal 9[0m
+[0;33mW (116088) tx: probando canal 10[0m
+[0;33mW (116894) tx: probando canal 11[0m
+[0;33mW (117176) tx: probando canal 12[0m
+[0;33mW (119142) tx: probando canal 13[0m
+[0;33mW (119249) tx: probando canal 1[0m
+[0;33mW (120087) tx: probando canal 2[0m
+[0;33mW (121505) tx: probando canal 3[0m
+[0;33mW (122772) tx: probando canal 4[0m
+[0;33mW (123626) tx: probando canal 5[0m
+[0;33mW (123868) tx: probando canal 6[0m
+[0;33mW (125876) tx: probando canal 7[0m
+[0;33mW (126963) tx: probando canal 8[0m
+[0;33mW (128970) tx: probando canal 9[0m
+[0;33mW (130977) tx: probando canal 10[0m
+[0;33mW (132984) tx: probando canal 11[0m
+[0;33mW (134991) tx: probando canal 12[0m
+[0;33mW (135092) tx: probando canal 13[0m
+[0;33mW (137098) tx: probando canal 1[0m
+[0;33mW (139106) tx: probando canal 2[0m
+[0;33mW (141042) tx: probando canal 3[0m
+[0;33mW (143050) tx: probando canal 4[0m
+[0;32mI (143053) tx: enlazado en canal 4[0m
+[0;32mI (152453) tx: enlazado en canal 4[0m
+[0;32mI (153031) tx: enlazado en canal 4[0m
+[0;32mI (161056) tx: enlazado en canal 4[0m
+[0;32mI (165060) tx: enlazado en canal 4[0m
+[0;32mI (175107) tx: enlazado en canal 4[0m
+[0;32mI (181468) mq135: Rs=149236 ohm | R0 estimado (aire a 420 ppm) = 237061 ohm[0m
+[0;33mW (187116) tx: probando canal 5[0m
+[0;32mI (187119) tx: enlazado en canal 5[0m
+[0;32mI (211547) mq135: Rs=140602 ohm | R0 estimado (aire a 420 ppm) = 223347 ohm[0m
+[0;32mI (241634) mq135: Rs=152338 ohm | R0 estimado (aire a 420 ppm) = 241989 ohm[0m
+[0;32mI (271761) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (301832) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (331893) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (361954) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (392015) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (422076) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (452200) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (482396) mq135: Rs=166056 ohm | R0 estimado (aire a 420 ppm) = 263781 ohm[0m
+[0;32mI (512593) mq135: Rs=164825 ohm | R0 estimado (aire a 420 ppm) = 261825 ohm[0m
+[0;33mW (533438) tx: probando canal 6[0m
+[0;33mW (533974) tx: probando canal 7[0m
+[0;33mW (534662) tx: probando canal 8[0m

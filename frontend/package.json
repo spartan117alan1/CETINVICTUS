@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node build.mjs",
+    "watch": "node build.mjs --watch"
+  },
+  "keywords": [],
+  "type": "module",
+  "devDependencies": {
+    "chart.js": "^4.6.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}

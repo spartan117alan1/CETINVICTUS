@@ -1,0 +1,1 @@
+idf_component_register(SRCS "metrics.c" "proto.c" INCLUDE_DIRS "include")

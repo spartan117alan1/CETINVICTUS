@@ -1,0 +1,13 @@
+node_modules
+
+.env
+
+# Entornos virtuales
+.venv*/
+
+# Editor (si no compartes configuración útil)
+.vscode/
+node_modules
+package-lock.json
+
+/broker/data

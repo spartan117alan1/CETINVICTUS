@@ -1,0 +1,251 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3818,len:0x1750
+load:0x403c9700,len:0x4
+load:0x403c9704,len:0xc00
+load:0x403cc700,len:0x2e04
+entry 0x403c9908
+[0;32mI (27) boot: ESP-IDF v5.1.2 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Nov 13 2026 07:23:54[0m
+[0;32mI (27) boot: Multicore bootloader[0m
+[0;32mI (30) boot: chip revision: v0.2[0m
+[0;32mI (34) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (38) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (43) boot.esp32s3: SPI Flash Size : 8MB[0m
+[0;32mI (48) boot: Enabling RNG early entropy source...[0m
+[0;32mI (53) boot: Partition Table:[0m
+[0;32mI (57) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (64) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (72) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (79) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (87) boot: End of partition table[0m
+[0;32mI (91) esp_image: segment 0: paddr=00010020 vaddr=3c0b0020 size=277dch (161756) map[0m
+[0;32mI (128) esp_image: segment 1: paddr=00037804 vaddr=3fc98000 size=045ach ( 17836) load[0m
+[0;32mI (132) esp_image: segment 2: paddr=0003bdb8 vaddr=40374000 size=04260h ( 16992) load[0m
+[0;32mI (138) esp_image: segment 3: paddr=00040020 vaddr=42000020 size=a4920h (674080) map[0m
+[0;32mI (263) esp_image: segment 4: paddr=000e4948 vaddr=40378260 size=0fd7ch ( 64892) load[0m
+[0;32mI (286) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (287) boot: Disabling RNG early entropy source...[0m
+[0;32mI (298) cpu_start: Multicore app[0m
+[0;32mI (298) cpu_start: Pro cpu up.[0m
+[0;32mI (298) cpu_start: Starting app cpu, entry point is 0x40375580[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (316) cpu_start: Pro cpu start user code[0m
+[0;32mI (317) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (317) cpu_start: Application information:[0m
+[0;32mI (320) cpu_start: Project name:     led_mqtt[0m
+[0;32mI (325) cpu_start: App version:      cd36145-dirty[0m
+[0;32mI (330) cpu_start: Compile time:     Nov 13 2026 07:23:47[0m
+[0;32mI (336) cpu_start: ELF file SHA256:  250811138086f482...[0m
+[0;32mI (342) cpu_start: ESP-IDF:          v5.1.2[0m
+[0;32mI (347) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (352) cpu_start: Max chip rev:     v0.99 [0m
+[0;32mI (357) cpu_start: Chip rev:         v0.2[0m
+[0;32mI (361) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (369) heap_init: At 3FCA0B28 len 00048BE8 (290 KiB): DRAM[0m
+[0;32mI (375) heap_init: At 3FCE9710 len 00005724 (21 KiB): STACK/DRAM[0m
+[0;32mI (381) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (388) heap_init: At 600FE010 len 00001FD8 (7 KiB): RTCRAM[0m
+[0;32mI (395) spi_flash: detected chip: gd[0m
+[0;32mI (398) spi_flash: flash io: dio[0m
+[0;32mI (402) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (409) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (416) app_start: Starting scheduler on CPU0[0m
+[0;32mI (421) app_start: Starting scheduler on CPU1[0m
+[0;32mI (421) main_task: Started on CPU0[0m
+[0;32mI (431) main_task: Calling app_main()[0m
+[0;32mI (435) gpio: GPIO[36]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (494) gpio: GPIO[21]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (546) pp: pp rom version: e7ae62f[0m
+[0;32mI (546) net80211: net80211 rom version: e7ae62f[0m
+[0;32mI (549) wifi:wifi driver task: 3fcaacfc, prio:23, stack:6656, core=0[0m
+[0;32mI (553) wifi:wifi firmware version: 91b9630[0m
+[0;32mI (554) wifi:wifi certification version: v7.0[0m
+[0;32mI (558) wifi:config NVS flash: enabled[0m
+[0;32mI (562) wifi:config nano formating: disabled[0m
+[0;32mI (566) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (571) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (575) wifi:Init management short buffer num: 32[0m
+[0;32mI (579) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (583) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (587) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (591) wifi:Init static rx buffer num: 10[0m
+[0;32mI (595) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (600) wifi_init: rx ba win: 6[0m
+[0;32mI (603) wifi_init: tcpip mbox: 32[0m
+[0;32mI (607) wifi_init: udp mbox: 6[0m
+[0;32mI (610) wifi_init: tcp mbox: 6[0m
+[0;32mI (614) wifi_init: tcp tx win: 5744[0m
+[0;32mI (618) wifi_init: tcp rx win: 5744[0m
+[0;32mI (622) wifi_init: tcp mss: 1440[0m
+[0;32mI (626) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (631) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (653) phy_init: phy_version 620,ec7ec30,Sep  5 2023,13:49:13[0m
+[0;33mW (654) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration[0m
+[0;32mI (707) wifi:mode : sta (48:ca:43:59:a1:44)[0m
+[0;32mI (708) wifi:enable tsf[0m
+[0;32mI (709) wifi:Set ps type: 0, coexist: 0[0m
+
+[0;32mI (713) ESPNOW: espnow [version: 1.0] init[0m
+[0;33mW (713) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (715) gpio: GPIO[5]| InputEn: 1| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;33mW (1741) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (2767) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (3120) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (3793) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (4819) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (5004) telemetry: heap libre=273652 min=271944 interna=273652 bloque_max=208896[0m
+[0;33mW (5004) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (5530) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (5845) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (5896) link: esp32_node_08 en línea[0m
+[0;33mW (6871) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (7897) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (7942) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (8923) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (9949) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (10007) telemetry: heap libre=273108 min=270764 interna=273108 bloque_max=208896[0m
+[0;33mW (10007) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (10353) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (10975) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (12001) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (12763) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (13027) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (14053) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (15010) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (15010) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (15079) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (15174) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (16105) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (17131) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (17585) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (18157) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (19183) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (19995) net: Wi-Fi desconectado, motivo=201[0m
+[0;32mI (20014) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (20015) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (20209) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (21235) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (22261) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (22406) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (22947) link: esp32_node_08 sin tramas: offline[0m
+[0;33mW (23287) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (24313) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (24816) net: Wi-Fi desconectado, motivo=201[0m
+[0;32mI (25018) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (25018) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (25339) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (25968) link: esp32_node_08 en línea[0m
+[0;33mW (26365) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (27227) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (27391) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (28417) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (29443) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (29638) net: Wi-Fi desconectado, motivo=201[0m
+[0;32mI (30022) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (30022) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (30469) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (31495) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (32049) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (32521) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (32971) link: esp32_node_08 sin tramas: offline[0m
+[0;33mW (33547) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (33997) link: esp32_node_08 en línea[0m
+[0;33mW (34460) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (34573) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (35025) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (35025) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (35599) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (36625) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (36871) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (37651) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (38677) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (39281) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (39703) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (40028) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (40028) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (40729) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (41691) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (41755) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (42781) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (43008) link: esp32_node_08 sin tramas: offline[0m
+[0;33mW (43807) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (44102) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (44833) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (45031) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (45031) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (45859) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (46513) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (46885) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (47911) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (48049) link: esp32_node_08 en línea[0m
+[0;33mW (48923) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (48937) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (49963) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (50035) telemetry: heap libre=273112 min=270764 interna=273112 bloque_max=208896[0m
+[0;33mW (50035) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (50989) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (51334) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (52015) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (53041) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (53744) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (54067) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (55038) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (55038) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (55093) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (56119) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (56156) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (57145) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (58171) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (58566) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (59197) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (60041) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (60041) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (60223) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (60977) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (61249) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (61290) link: esp32_node_08 sin tramas: offline[0m
+[0;32mI (62091) link: esp32_node_08 en línea[0m
+[0;33mW (62275) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (63301) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (63388) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (64327) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (65044) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (65044) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (65353) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (65799) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (66379) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (67405) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (68209) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (68431) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (69094) link: esp32_node_08 sin tramas: offline[0m
+[0;33mW (69457) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (70047) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (70047) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (70226) link: esp32_node_08 en línea[0m
+[0;33mW (70483) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (70621) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (71509) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (72535) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (73031) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (73561) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (74587) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (75050) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (75050) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (75442) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (75613) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (76639) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (77665) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (77852) net: Wi-Fi desconectado, motivo=201[0m
+[0;33mW (78691) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (79237) link: esp32_node_08 sin tramas: offline[0m
+[0;33mW (79717) wifi:Haven't to connect to a suitable AP now![0m
+[0;32mI (80054) telemetry: heap libre=273080 min=270752 interna=273080 bloque_max=208896[0m
+[0;33mW (80054) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (80263) net: Wi-Fi desconectado, motivo=201[0m
+[0;32mI (80278) link: esp32_node_08 en línea[0m
+[0;33mW (80743) wifi:Haven't to connect to a suitable AP now![0m
+[0;33mW (81769) wifi:Haven't to connect to a suitable AP now![0m
