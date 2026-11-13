@@ -30,6 +30,7 @@ db.serialize(() => {
         turbidity_ntu REAL,
         chlorine_mg_l REAL,
         flow_lps REAL,
+        water_temp_c REAL,
         turbidity_status TEXT,
         battery_v REAL
     )`);
@@ -122,6 +123,7 @@ mqttClient.on('message', (topic, message) => {
             const turbidity_ntu = metrics.turbidity_ntu !== undefined ? metrics.turbidity_ntu : null;
             const chlorine_mg_l = metrics.chlorine_mg_l !== undefined ? metrics.chlorine_mg_l : null;
             const flow_lps = metrics.flow_lps !== undefined ? metrics.flow_lps : null;
+            const water_temp_c = metrics.water_temp_c !== undefined ? metrics.water_temp_c : null;
             const battery_v = diagnostics.battery_v !== undefined ? diagnostics.battery_v : null;
             const ts = telemetria.ts || Math.floor(Date.now() / 1000);
 
@@ -131,8 +133,8 @@ mqttClient.on('message', (topic, message) => {
                 
                 const stmt = db.prepare(`
                     INSERT INTO lecturas 
-                    (device_id, region, zona, ts, ph, turbidity_ntu, chlorine_mg_l, flow_lps, turbidity_status, battery_v) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (device_id, region, zona, ts, ph, turbidity_ntu, chlorine_mg_l, flow_lps, water_temp_c, turbidity_status, battery_v) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `);
                 
                 stmt.run(
@@ -144,6 +146,7 @@ mqttClient.on('message', (topic, message) => {
                     turbidity_ntu, 
                     chlorine_mg_l, 
                     flow_lps, 
+                    water_temp_c,
                     sensors_health.turbidity_status || 'Optimal', 
                     battery_v
                 );

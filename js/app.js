@@ -140,8 +140,8 @@ window.procesarDatosIoT = function(payload) {
     if(document.getElementById('diag-rssi') && diagnostics.rssi_dbm !== undefined) {
         document.getElementById('diag-rssi').innerText = `${diagnostics.rssi_dbm} dBm`;
     }
-    if(document.getElementById('diag-temp-int') && health.internal_temp_c !== undefined) {
-        document.getElementById('diag-temp-int').innerText = `${health.internal_temp_c} °C`;
+    if(document.getElementById('diag-temp-int') && metrics.water_temp_c !== undefined) {
+        document.getElementById('diag-temp-int').innerText = `${metrics.water_temp_c} °C`;
     }
     if(document.getElementById('diag-calibracion') && health.days_since_last_calibration !== undefined) {
         document.getElementById('diag-calibracion').innerText = `${health.days_since_last_calibration} días`;
